@@ -66,14 +66,12 @@ def user_input(user_question):
 
     chain = get_conversational_chain()
 
-    
-    response = chain(
-        {
-            "input_documents": docs,
-            "question": user_question,
-            "chat_history": chat_history
-        },
-        return_only_outputs=True)
+    input_dict = {
+        "query": user_question,
+        "chat_history": chat_history,
+    }
+
+    response = chain.run(input_dict)
 
     # Update chat history with the new user question and model's response
     chat_history.append(("user", user_question))
