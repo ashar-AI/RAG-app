@@ -22,6 +22,9 @@ genai.configure(api_key=os.getenv("OPENAI_API_KEY"))
 embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
 new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
 
+# Initialize empty chat history
+chat_history = []
+
 def get_pdf_text(pdf_docs):
     text=""
     for pdf in pdf_docs:
@@ -58,14 +61,23 @@ def get_conversational_chain():
 
 
 def user_input(user_question):
+    global chat_history  # Use global chat history
     docs = new_db.similarity_search(user_question)
 
     chain = get_conversational_chain()
 
     
     response = chain(
-        {"input_documents":docs, "question": user_question}
+        {
+            "input_documents": docs,
+            "question": user_question,
+            "chat_history": chat_history
+        },
         , return_only_outputs=True)
+
+    # Update chat history with the new user question and model's response
+    chat_history.append(("user", user_question))
+    chat_history.append(("assistant", response["output_text"]))
 
     print(response)
     st.write("Reply: ", response["output_text"])
