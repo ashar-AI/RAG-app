@@ -18,6 +18,10 @@ load_dotenv()
 os.getenv("OPENAI_API_KEY")
 genai.configure(api_key=os.getenv("OPENAI_API_KEY"))
 
+# Load the FAISS index
+embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
+new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+
 def get_pdf_text(pdf_docs):
     text=""
     for pdf in pdf_docs:
@@ -71,9 +75,6 @@ def get_conversational_chain():
 
 
 def user_input(user_question):
-    embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
-    
-    new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
     docs = new_db.similarity_search(user_question)
 
     chain = get_conversational_chain()
