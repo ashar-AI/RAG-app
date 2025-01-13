@@ -73,7 +73,7 @@ def user_input(user_question):
             "question": user_question,
             "chat_history": chat_history
         },
-        , return_only_outputs=True)
+        return_only_outputs=True)
 
     # Update chat history with the new user question and model's response
     chat_history.append(("user", user_question))
