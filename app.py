@@ -48,7 +48,7 @@ def get_conversational_chain():
     Answer:
     """
 
-    model = OpenAI(model="text-davinci-003", temperature=0.3)
+    model = OpenAI(model="gpt-4o-mini", temperature=0.3)
 
     prompt = PromptTemplate(template = prompt_template, input_variables = ["context", "question"])
     chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
