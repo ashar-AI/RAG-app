@@ -67,7 +67,7 @@ def user_input(user_question):
     chain = get_conversational_chain()
 
     input_dict = {
-        "query": user_question,
+        "question": user_question,
         "chat_history": chat_history,
     }
 
