@@ -45,31 +45,14 @@ def get_vector_store(text_chunks):
 
 
 def get_conversational_chain():
-    prompt_template = """
-    Answer the question as detailed as possible from the provided context, make sure to provide all the details, if the answer is not
-    provided in the context just say, "answer is not available in the context", don't provide the wrong answer\n\n
-    Context:\n {context}?\n
-    Question: \n{question}\n
+    # Initialize the language model
+    model = ChatOpenAI(model="gpt-4", temperature=0.3)
 
-    Answer:
-    """
-
-    model = ChatOpenAI(model="gpt-4o-mini", temperature=0.3)
-
-   # Create a prompt template
-    prompt = ChatPromptTemplate.from_messages(
-        messages=[
-            ("system", prompt_template),
-            ("human", "{input}")
-        ]
-    )
-
-    # Initialize the retriever
+    # Initialize the retriever from the loaded FAISS index
     retriever = new_db.as_retriever()
 
-    # Create the conversational chain
-    chain = ConversationalRetrievalChain.from_llm(model, retriever, prompt=prompt)
-
+    # Create the conversational retrieval chain
+    chain = ConversationalRetrievalChain.from_llm(model, retriever)
     return chain
 
 
