@@ -9,6 +9,8 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain import OpenAI, PromptTemplate
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
+from langchain_openai import ChatOpenAI
+from langchain.chains import ConversationalRetrievalChain
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -38,20 +40,30 @@ def get_vector_store(text_chunks):
 
 
 def get_conversational_chain():
-
     prompt_template = """
-    Answer the question as detailed as possible from the provided context, make sure to provide all the details, if the answer is not in
-    provided context just say, "answer is not available in the context", don't provide the wrong answer\n\n
+    Answer the question as detailed as possible from the provided context, make sure to provide all the details, if the answer is not
+    provided in the context just say, "answer is not available in the context", don't provide the wrong answer\n\n
     Context:\n {context}?\n
     Question: \n{question}\n
 
     Answer:
     """
 
-    model = OpenAI(model="gpt-4o-mini", temperature=0.3)
+    model = ChatOpenAI(model="gpt-4o-mini", temperature=0.3)
 
-    prompt = PromptTemplate(template = prompt_template, input_variables = ["context", "question"])
-    chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
+   # Create a prompt template
+    prompt = ChatPromptTemplate.from_messages(
+        messages=[
+            ("system", prompt_template),
+            ("human", "{input}")
+        ]
+    )
+
+    # Initialize the retriever
+    retriever = new_db.as_retriever()
+
+    # Create the conversational chain
+    chain = ConversationalRetrievalChain.from_llm(model, retriever, prompt=prompt)
 
     return chain
 
