@@ -73,12 +73,17 @@ def user_input(user_question):
 
     response = chain.run(input_dict)
 
+    if isinstance(response, str):
+        output_text = response
+    else:
+        output_text = response["output_text"]
+
     # Update chat history with the new user question and model's response
     chat_history.append(("user", user_question))
-    chat_history.append(("assistant", response["output_text"]))
+    chat_history.append(("assistant", output_text))
 
     print(response)
-    st.write("Reply: ", response["output_text"])
+    st.write("Reply: ", output_text)
 
 
 
