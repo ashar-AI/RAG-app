@@ -9,6 +9,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain import OpenAI, PromptTemplate
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
+from langchain.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain.chains import ConversationalRetrievalChain
 from dotenv import load_dotenv
